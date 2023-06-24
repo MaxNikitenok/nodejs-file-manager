@@ -1,0 +1,25 @@
+{
+  "name": "nodejs-file-manager",
+  "version": "1.0.0",
+  "description": "node js file manager exercise in RSSchool",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MaxNikitenok/nodejs-file-manager.git"
+  },
+  "keywords": [
+    "nodejs",
+    "file-manager",
+    "MaxNikitenok"
+  ],
+  "author": "MaxNikitenok",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MaxNikitenok/nodejs-file-manager/issues"
+  },
+  "homepage": "https://github.com/MaxNikitenok/nodejs-file-manager#readme"
+}
