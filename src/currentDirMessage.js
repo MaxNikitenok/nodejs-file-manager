@@ -1,0 +1,1 @@
+export const currentDirMessage  = (path) => `You are currently in ${path}`;
