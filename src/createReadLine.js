@@ -1,9 +1,18 @@
 import readlinePromises from 'node:readline/promises';
 import { getUserName } from './getUserName.js';
-import { resolve } from 'path';
 import { currentDirMessage } from './currentDirMessage.js';
 import { homedir } from 'os';
-import { readdir } from 'fs/promises';
+import { up } from './nwd/up.js';
+import { cd } from './nwd/cd.js';
+import { ls } from './nwd/ls.js';
+import { cat } from './fs/cat.js';
+import { add } from './fs/add.js';
+import { resolve } from 'path';
+import { writeFile } from 'node:fs/promises';
+import { rn } from './fs/rn.js';
+import { cp } from './fs/cp.js';
+import { mv } from './fs/mv.js';
+import { rm } from './fs/rm.js';
 
 const userName = getUserName();
 const goodbye = `Thank you for using File Manager, ${userName}, goodbye!`;
@@ -16,7 +25,7 @@ export const createReadline = () => {
 
   process.chdir(homedir());
 
-  console.log(currentDirMessage(process.cwd()));
+  console.log('\n', currentDirMessage(process.cwd()), '\n');
 
   rl.on('line', async (line) => {
     const parseLine = line.trim().split(' ');
@@ -25,43 +34,44 @@ export const createReadline = () => {
       case '.exit':
         console.log(goodbye);
         process.exit(0);
-      case 'gg':
-        console.log('qq');
-        break;
       case 'up':
-        process.chdir(resolve('..'));
-        console.log(currentDirMessage(process.cwd()));
+        up();
         break;
+
       case 'cd':
-        process.chdir(resolve(parseLine[1]));
-        console.log(currentDirMessage(process.cwd()));
+        await cd(parseLine[1]);
         break;
+
       case 'ls':
-        const ls = async () => {
-          const folderContent = await readdir(process.cwd(), {
-            withFileTypes: true,
-          });
-
-          const sortedFolderContent = folderContent
-            .map((file) => ({
-              Name: file.name,
-              Type: file.isFile() ? 'file' : 'directory',
-            }))
-            .sort((a, b) => {
-              if (a.Type === b.Type) {
-                return a.Name.localeCompare(b.Name);
-              }
-              return a.Type.localeCompare(b.Type);
-            });
-
-          console.table(sortedFolderContent);
-        };
-
-        ls();
-        
+        await ls();
         break;
+
+      case 'cat':
+        await cat(parseLine[1]);
+        break;
+
+      case 'add':
+        await add(parseLine[1]);
+        break;
+
+      case 'rn':
+        await rn(parseLine[1], parseLine[2]);
+        break;
+
+      case 'cp':
+        await cp(parseLine[1], parseLine[2]);
+        break;
+
+      case 'mv':
+        await mv(parseLine[1], parseLine[2]);
+        break;
+
+      case 'rm':
+        await rm(parseLine[1]);
+        break;
+
       default:
-        console.log('Invalid input');
+        console.log('\nInvalid input\n');
     }
   });
 
