@@ -13,6 +13,10 @@ import { rn } from './fs/rn.js';
 import { cp } from './fs/cp.js';
 import { mv } from './fs/mv.js';
 import { rm } from './fs/rm.js';
+import { os } from './os/os.js';
+import { hash } from './hash/hash.js';
+import { compress } from './compress/compress.js';
+import { decompress } from './compress/decompress.js';
 
 const userName = getUserName();
 const goodbye = `Thank you for using File Manager, ${userName}, goodbye!`;
@@ -68,6 +72,21 @@ export const createReadline = () => {
 
       case 'rm':
         await rm(parseLine[1]);
+        break;
+
+      case 'os':
+        os(parseLine[1]);
+        break;
+
+      case 'hash':
+        hash(parseLine[1]);
+
+      case 'compress':
+        compress(parseLine[1], parseLine[2]);
+        break;
+
+      case 'decompress':
+        decompress(parseLine[1], parseLine[2]);
         break;
 
       default:
