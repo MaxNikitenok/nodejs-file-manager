@@ -1,15 +1,26 @@
 import { createReadStream, createWriteStream } from 'node:fs';
-import { resolve, join } from 'node:path';
+import { resolve, parse } from 'node:path';
 import { createBrotliDecompress } from 'node:zlib';
 
 export const decompress = async (file, pathToDestination) => {
-  const pathToFile = resolve(file);
-  console.log('pathToFile', pathToFile)
-  const source = createReadStream(pathToFile);
-  const brFilePath = join(pathToDestination, `${file.split('.')[0]}.txt`);
-  console.log('brFilePath', brFilePath)
-  const destination = createWriteStream(brFilePath);
-  const brotliDecompress = createBrotliDecompress();
+  try {
+    const source = createReadStream(resolve(file));
+    const decompressedFilePath = resolve(
+      pathToDestination,
+      `${parse(file).name}.txt`
+    );
+ 
+    const destination = createWriteStream(decompressedFilePath);
+    const brotliDecompress = createBrotliDecompress();
 
-  source.pipe(brotliDecompress).pipe(destination);
+    source.pipe(brotliDecompress).pipe(destination);
+
+    console.log(
+      `\nfile ${
+        parse(file).base
+      } is decompressed and placed in ${decompressedFilePath}`
+    );
+  } catch (err) {
+    console.log('Operation failed', err);
+  }
 };

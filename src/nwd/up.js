@@ -1,7 +1,9 @@
 import { resolve } from 'path';
-import { currentDirMessage } from '../currentDirMessage.js';
 
 export const up = async () => {
-  process.chdir(resolve('..'));
-  process.stdout.write(`\n${currentDirMessage(process.cwd())}\n`);
+  try {
+    process.chdir(resolve('..'));
+  } catch (err) {
+    console.log('Operation failed', err);
+  }
 };

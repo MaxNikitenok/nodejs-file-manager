@@ -1,15 +1,26 @@
 import { createReadStream, createWriteStream } from 'node:fs';
-import { resolve, join } from 'node:path';
+import { resolve, parse } from 'node:path';
 import { createBrotliCompress } from 'node:zlib';
 
 export const compress = async (file, pathToDestination) => {
-  const pathToFile = resolve(file);
-  console.log('pathToFile', pathToFile)
-  const source = createReadStream(pathToFile);
-  const brFilePath = join(pathToDestination, `${file.split('.')[0]}.br`);
-  console.log('brFilePath', brFilePath)
-  const destination = createWriteStream(brFilePath);
-  const brotliCompress = createBrotliCompress();
+  try {
+    const source = createReadStream(resolve(file));
+    const compressedFilePath = resolve(
+      pathToDestination,
+      `${parse(file).name}.br`
+    );
 
-  source.pipe(brotliCompress).pipe(destination);
+    const destination = createWriteStream(compressedFilePath);
+    const brotliCompress = createBrotliCompress();
+
+    source.pipe(brotliCompress).pipe(destination);
+
+    console.log(
+      `\nfile ${
+        parse(file).base
+      } is compressed and placed in ${compressedFilePath}`
+    );
+  } catch (err) {
+    console.log('Operation failed', err);
+  }
 };

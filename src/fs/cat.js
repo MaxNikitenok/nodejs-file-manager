@@ -1,9 +1,8 @@
 import { createReadStream } from 'node:fs';
-import { resolve } from 'path';
-import { currentDirMessage } from '../currentDirMessage.js';
+import { resolve, parse } from 'path';
 
 export const cat = async (fileName) => {
-  new Promise(async (res, rej) => {
+  await new Promise(async (res, rej) => {
     try {
       const path = resolve(fileName);
 
@@ -12,7 +11,7 @@ export const cat = async (fileName) => {
       readStream.pipe(process.stdout).on('error', rej);
 
       readStream.on('open', () => {
-        process.stdout.write(`\n${fileName}--------------------\n`);
+        process.stdout.write(`\n${parse(fileName).base}--------------------\n`);
       });
 
       readStream.on('end', () => {
@@ -20,9 +19,7 @@ export const cat = async (fileName) => {
         res();
       });
     } catch (err) {
-      rej(err);
+      console.log('Operation failed', err);
     }
-  }).then(() => {
-    console.log(`\n${currentDirMessage(process.cwd())}\n`);
   });
 };
